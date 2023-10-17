@@ -7,7 +7,8 @@
 #include <string.h>
 #include <sys/wait.h>
 
-int main(int ac, char **argv);
+/* Shell Terminal */
+int main(void);
 int execute_command(char **args);
 char **parse_input(const char *prompt);
 
