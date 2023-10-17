@@ -2,14 +2,13 @@
 
 int execute_command(char **args)
 {
+	char command_path[100];
+
 	/* Check if the command is not specified */
 	if (args[0] == NULL)
 	{
 		return (0); /* Successful execution */
 	}
-
-	/* Check if the command is found in the /bin directory */
-	char command_path[100];
 
 	/* Check if it's a 'cd' command */
 	if (strcmp(args[0], "cd") == 0)
