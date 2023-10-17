@@ -7,5 +7,6 @@
 #include <string.h>
 
 int main(int ac, char **argv);
+int execute_command(char **args);
 
 #endif /*_SHELL_H_*/
