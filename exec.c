@@ -7,6 +7,10 @@ int execute_command(char **args)
 	{
 		return (0); /* Successful execution */
 	}
+
+	/* Check if the command is found in the /bin directory */
+	char command_path[100];
+
 	/* Check if it's a 'cd' command */
 	if (strcmp(args[0], "cd") == 0)
 	{
@@ -16,6 +20,7 @@ int execute_command(char **args)
 			if (chdir(getenv("HOME")) != 0)
 			{
 				perror("cd");
+				return (-1); /* Error */
 			}
 		}
 		else
@@ -24,9 +29,10 @@ int execute_command(char **args)
 			if (chdir(args[1]) != 0)
 			{
 				perror("cd");
+				return (-1); /* Error */
 			}
 		}
-		return (1); /* Command executed, but not an error */
+		return (0); /* Sucessful Execution */
 	}
 	/* Check if the command is found in the current directory */
 	if (access(args[0], X_OK) == 0)
@@ -58,14 +64,12 @@ int execute_command(char **args)
 		}
 		return (-1);
     }
-	
-	/* Check if the command is found in the /bin directory */
-	char command_path[100];
+
 	snprintf(command_path, sizeof(command_path), "/bin/%s", args[0]);
-	
 	if (access(command_path, X_OK) == 0)
 	{
-		pid_t pid = fork();
+		pid_t pid;
+		pid = fork();
 		if (pid == 0) 
 		{
 			/* Inside the child process */
