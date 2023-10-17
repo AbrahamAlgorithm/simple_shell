@@ -13,11 +13,17 @@ int main(void)
             continue;
         }
 
-        status = execute_command(args);
-
-        if (status == -1)
+        if (_strcmp(args[0], "env") == 0)
         {
-            write(STDOUT_FILENO, "Command not found.\n", 19);
+            print_environment();
+        }
+        else
+        {
+            status = execute_command(args);
+            if (status == -1)
+            {
+                write(STDOUT_FILENO, "Command not found.\n", 19);
+            }
         }
 
         int i;
