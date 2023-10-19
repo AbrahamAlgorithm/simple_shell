@@ -1,7 +1,7 @@
 #include "shells.h"
+
 /**
  * parse_input - this function displays the input
- * to the terminal and parse it
  * @prompt: the prompt to be displayed
  * Return: the array of tokens
  */
@@ -26,36 +26,30 @@ char **parse_input(const char *prompt)
 	{
 		write(STDOUT_FILENO, "EOF detected. Exiting the shell.\n", 34);
 		free(input);
-		exit(EXIT_SUCCESS);
-	}
+		exit(EXIT_SUCCESS); {
 	token = strtok(input, " \n");
 	while (token != NULL)
 	{
 		char **temp = realloc(tokens, (token_count + 1) * sizeof(char *));
-
 		if (temp == NULL)
 		{
 			perror("parse_input: realloc");
 			exit(EXIT_FAILURE);
-		}
-		tokens = temp;
+		} tokens = temp;
 		tokens[token_count] = malloc(strlen(token) + 1);
 		if (tokens[token_count] == NULL)
 		{
 			perror("parse_input: malloc");
 			exit(EXIT_FAILURE);
-		}
-		strcpy(tokens[token_count], token);
+		} strcpy(tokens[token_count], token);
 		token_count++;
 		token = strtok(NULL, " \n");
-	}
-	temp = realloc(tokens, (token_count + 1) * sizeof(char *));
+	} temp = realloc(tokens, (token_count + 1) * sizeof(char *));
 	if (temp == NULL)
 	{
 		perror("parse_input: realloc");
 		exit(EXIT_FAILURE);
-	}
-	tokens = temp;
+	} tokens = temp;
 	tokens[token_count] = NULL;
 	free(input);
 	return (tokens);

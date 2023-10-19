@@ -7,7 +7,6 @@ int execute_command(char **args)
 {
 	if (args[0] == NULL)
 		return (0);
-
 	if (access(args[0], X_OK) == 0)
 	{
 		pid_t child = fork();
@@ -16,14 +15,12 @@ int execute_command(char **args)
 		{
 			perror("problem");
 			return (-1);
-		}
-		else if (child == 0)
+		} else if (child == 0)
 		{
 			execve(args[0], args, environ);
 			perror("execve");
 			_exit(EXIT_FAILURE);
-		}
-		else
+		} else
 		{
 			int status, exit_status;
 
@@ -34,8 +31,7 @@ int execute_command(char **args)
 				exit_status = -1;
 			return (exit_status);
 		}
-	}
-	else
+	} else
 	{
 		char path[256], *binDirectory = "/bin/";
 		int i = 0, j = 0;
@@ -44,16 +40,12 @@ int execute_command(char **args)
 		{
 			path[i] = binDirectory[i];
 			i++;
-		}
-
-		while (args[0][j] != '\0')
+		} while (args[0][j] != '\0')
 		{
 			path[i] = args[0][j];
 			i++;
 			j++;
-		}
-
-		path[i] = '\0';
+		} path[i] = '\0';
 		if (access(path, X_OK) == 0)
 		{
 			pid_t child = fork();
@@ -62,14 +54,12 @@ int execute_command(char **args)
 			{
 				perror("problem");
 				return (-1);
-			}
-			else if (child == 0)
+			} else if (child == 0)
 			{
 				execve(path, args, environ);
 				perror("execve");
 				_exit(EXIT_FAILURE);
-			}
-			else
+			} else
 			{
 				int status;
 				int exit_status;
@@ -80,10 +70,8 @@ int execute_command(char **args)
 				else
 					exit_status = -1;
 				return (exit_status);
-
 			}
-		}
-		else
+		} else
 		{
 			write(STDOUT_FILENO, "Command not found.\n", 19);
 			return (-1);
