@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <signal.h>
+#include <fcntl.h>
 
 #define END_OF_FILE -2
 #define EXIT -3
@@ -63,6 +64,8 @@ alias_t *aliases;
 
 /* Main Helpers */
 ssize_t _getline(char **lineptr, size_t *n, FILE *stream);
+ssize_t get_new_len(char *line);
+void logical_ops(char *line, ssize_t *new_len);
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
 char **_strtok(char *line, char *delim);
 char *get_location(char *command);
@@ -80,6 +83,11 @@ int run_args(char **args, char **front, int *exe_ret);
 int handle_args(int *exe_ret);
 int check_args(char **args);
 void free_args(char **args, char **front);
+char **replace_aliases(char **args);
+
+/* ALias helpers */
+void set_alias(char *var_name, char *value);
+void print_alias(alias_t *alias);
 char **replace_aliases(char **args);
 
 /* String functions */
