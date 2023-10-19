@@ -1,104 +1,88 @@
 #include "shells.h"
 
+/**
+ * execute_command - execute commands if command is detected
+ * @args: command to be executed
+ */
+
 int execute_command(char **args)
 {
-	char command_path[100];
-
-	/* Check if the command is not specified */
 	if (args[0] == NULL)
-	{
-		return (0); /* Successful execution */
-	}
+		return (0);
 
-	/* Check if it's a 'cd' command */
-	if (_strcmp(args[0], "cd") == 0)
-	{
-		if (args[1] == NULL)
-		{
-			/* Change to the home directory */
-			if (chdir(getenv("HOME")) != 0)
-			{
-				perror("cd");
-				return (-1); /* Error */
-			}
-		}
-		else
-		{
-			/* Change to the specified directory */
-			if (chdir(args[1]) != 0)
-			{
-				perror("cd");
-				return (-1); /* Error */
-			}
-		}
-		return (0); /* Sucessful Execution */
-	}
-	/* Check if the command is found in the current directory */
 	if (access(args[0], X_OK) == 0)
 	{
-		pid_t pid = fork();
-		if (pid == 0)
+		pid_t child = fork();
+
+		if (child == -1)
 		{
-			/* Inside the child process */
-			if (execve(args[0], args, environ) == -1)
-			{
-				perror("execve");
-				exit(EXIT_FAILURE);
-			}
-		}
-		else if (pid < 0)
-		{
-			perror("fork");
+			perror("problem");
 			return (-1);
-		}
-		else
+		} else if (child == 0)
 		{
-			/* Inside the parent process */
-			int status;
-			waitpid(pid, &status, 0);
-			if (WIFEXITED(status))
-			{
-				return WEXITSTATUS(status);
-			}
+			execve(args[0], args, environ);
+			perror("execve");
+			_exit(EXIT_FAILURE);
+		} else
+		{
+			int status, exit_status;
+
+			waitpid(child, &status, 0);
+			if ((status & 255) == 0)
+				exit_status = (status >> 8) & 255;
+			else
+				exit_status = -1;
+			return (exit_status);
 		}
-		return (-1);
-    }
-
-	_strcpy(command_path, "/bin/");
-	_strconcat(command_path, args[0]);
-
-	if (access(command_path, X_OK) == 0)
+	} else
 	{
-		pid_t pid;
-		pid = fork();
-		if (pid == 0) 
+		char path[256], *binDirectory = "/bin/";
+		int i = 0, j = 0;
+
+		while (binDirectory[i] != '\0')
 		{
-			/* Inside the child process */
-			if (execve(command_path, args, environ) == -1)
-			{
-				perror("execve");
-				exit(EXIT_FAILURE);
-			}
+			path[i] = binDirectory[i];
+			i++;
 		}
-		else if (pid < 0)
+
+		while (args[0][j] != '\0')
 		{
-			perror("fork");
+			path[i] = args[0][j];
+			i++;
+			j++;
+		}
+
+		path[i] = '\0';
+		if (access(path, X_OK) == 0)
+		{
+			pid_t child = fork();
+
+			if (child == -1)
+			{
+				perror("problem");
+				return (-1);
+			} else if (child == 0)
+			{
+				execve(path, args, environ);
+				perror("execve");
+				_exit(EXIT_FAILURE);
+			} else
+			{
+				int status;
+				int exit_status;
+
+				waitpid(child, &status, 0);
+				if ((status & 0xff) == 0)
+					exit_status = (status >> 8) & 0xff;
+				else
+					exit_status = -1;
+				return (exit_status);
+
+			}
+		} else
+		{
+			write(STDOUT_FILENO, "Command not found.\n", 19);
 			return (-1);
 		}
-		else
-		{
-			/* Inside the parent process */
-			int status;
-			waitpid(pid, &status, 0);
-			if (WIFEXITED(status))
-			{
-				return WEXITSTATUS(status);
-			}
-		}
-		return (-1);
-    }
-    
-    /* Command not found */
-	write(STDOUT_FILENO, "No such file or directory\n", _strlen("No such file or directory\n"));
-	return (-1);
+	}
 }
