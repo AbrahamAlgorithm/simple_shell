@@ -34,6 +34,6 @@ char *_strchr(const char *str, char ch);
 /* Environment Built-ins */
 int print_environment(void);
 int env(char **args, char __attribute__((__unused__)) **front);
-
+int setenv(char **args, char __attribute__((__unused__)) **front);
 
 #endif /*_SHELL_H_*/
