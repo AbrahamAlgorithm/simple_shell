@@ -11,7 +11,7 @@ int execute_command(char **args)
 	}
 
 	/* Check if it's a 'cd' command */
-	if (strcmp(args[0], "cd") == 0)
+	if (_strcmp(args[0], "cd") == 0)
 	{
 		if (args[1] == NULL)
 		{
@@ -64,7 +64,9 @@ int execute_command(char **args)
 		return (-1);
     }
 
-	snprintf(command_path, sizeof(command_path), "/bin/%s", args[0]);
+	_strcpy(command_path, "/bin/");
+	_strconcat(command_path, args[0]);
+
 	if (access(command_path, X_OK) == 0)
 	{
 		pid_t pid;
@@ -97,6 +99,6 @@ int execute_command(char **args)
     }
     
     /* Command not found */
-	printf("Command not found\n");
+	write(STDOUT_FILENO, "No such file or directory\n", _strlen("No such file or directory\n"));
 	return (-1);
 }
