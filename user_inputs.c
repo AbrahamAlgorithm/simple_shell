@@ -22,8 +22,7 @@ char **parse_input(const char *prompt)
 		perror("parse_input: getline");
 		free(input);
 		exit(EXIT_FAILURE);
-	}
-	else if (response == 0)
+	} else if (response == 0)
 	{
 		write(STDOUT_FILENO, "EOF detected. Exiting the shell.\n", 34);
 		free(input);

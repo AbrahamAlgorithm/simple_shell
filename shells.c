@@ -13,13 +13,13 @@ int main(void)
 		char **args = parse_input("~$ ");
 		int status;
 		int i;
-		
+
 		if (args == NULL)
 		{
 			write(STDOUT_FILENO, "Error occurred while getting input.\n", 36);
 			continue;
 		}
-		
+
 		if (strcmp(args[0], "env") == 0)
 		{
 			print_environment();
@@ -32,13 +32,13 @@ int main(void)
 				write(STDOUT_FILENO, "Command not found.\n", 19);
 			}
 		}
-		
+
 		for (i = 0; args[i] != NULL; i++)
 		{
 			free(args[i]);
 		}
 		free(args);
 	}
-	
+
 	return (0);
 }
