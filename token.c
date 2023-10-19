@@ -1,67 +1,100 @@
-#include "shells.h"
+#include "shell.h"
 
 /**
- * similar - checks if character matches any value in string
- * @chr: character
- * @string: string
+ * token_len - Locates the delimiter index marking the end
+ *             of the first token contained within a string.
+ * @str: The string to be searched.
+ * @delim: The delimiter character.
  *
- * Return: 1 if match, 0 if not
+ * Return: The delimiter index marking the end of
+ *         the intitial token pointed to be str.
  */
-unsigned int similar(char chr, const char *string)
+int token_len(char *str, char *delim)
 {
-	unsigned int i;
+	int index = 0, len = 0;
 
-	for (i = 0; string[i] != '\0'; i++)
+	while (*(str + index) && *(str + index) != *delim)
 	{
-		if (chr == string[i])
-			return (1);
+		len++;
+		index++;
 	}
-	return (0);
+
+	return (len);
 }
 
 /**
- * _strtok - my version of the strtok function
- * @str: string tokenized
- * @delim: splitter
+ * count_tokens - Counts the number of delimited
+ *                words contained within a string.
+ * @str: The string to be searched.
+ * @delim: The delimiter character.
  *
- * Return: pointer to the next token or NULL
+ * Return: The number of words contained within str.
  */
-char *_strtok(char *str, const char *delim)
+int count_tokens(char *str, char *delim)
 {
-	static char *token;
-	static char *next;
-	unsigned int i;
+	int index, tokens = 0, len = 0;
 
-	if (str != NULL)
-		next = str;
-	token = next;
-	if (token == NULL)
+	for (index = 0; *(str + index); index++)
+		len++;
+
+	for (index = 0; index < len; index++)
+	{
+		if (*(str + index) != *delim)
+		{
+			tokens++;
+			index += token_len(str + index, delim);
+		}
+	}
+
+	return (tokens);
+}
+
+/**
+ * _strtok - Tokenizes a string.
+ * @line: The string.
+ * @delim: The delimiter character to tokenize the string by.
+ *
+ * Return: A pointer to an array containing the tokenized words.
+ */
+char **_strtok(char *line, char *delim)
+{
+	char **ptr;
+	int index = 0, tokens, t, letters, l;
+
+	tokens = count_tokens(line, delim);
+	if (tokens == 0)
 		return (NULL);
-	for (i = 0; next[i] != '\0'; i++)
-	{
-		if (similar(next[i], delim) == 0)
-			break;
-	}
-	if (next[i] == '\0' || next[i] == '#')
-	{
-		next = NULL;
+
+	ptr = malloc(sizeof(char *) * (tokens + 2));
+	if (!ptr)
 		return (NULL);
-	}
-	token = next + i;
-	next = token;
-	for (i = 0; next[i] != '\0'; i++)
+
+	for (t = 0; t < tokens; t++)
 	{
-		if (similar(next[i], delim) == 1)
-			break;
+		while (line[index] == *delim)
+			index++;
+
+		letters = token_len(line + index, delim);
+
+		ptr[t] = malloc(sizeof(char) * (letters + 1));
+		if (!ptr[t])
+		{
+			for (index -= 1; index >= 0; index--)
+				free(ptr[index]);
+			free(ptr);
+			return (NULL);
+		}
+
+		for (l = 0; l < letters; l++)
+		{
+			ptr[t][l] = line[index];
+			index++;
+		}
+
+		ptr[t][l] = '\0';
 	}
-	if (next[i] == '\0')
-		next = NULL;
-	else
-	{
-		next[i] = '\0';
-		next = next + i + 1;
-		if (*next == '\0')
-			next = NULL;
-	}
-	return (token);
+	ptr[t] = NULL;
+	ptr[t + 1] = NULL;
+
+	return (ptr);
 }
