@@ -1,4 +1,7 @@
-#include "shells.h"
+#include "shell.h"
+
+char *fill_path_dir(char *path);
+list_t *get_path_dir(char *path);
 
 /**
  * get_location - Locates a command in the PATH.
@@ -14,7 +17,6 @@ char *get_location(char *command)
 	struct stat st;
 
 	path = _getenv("PATH");
-
 	if (!path || !(*path))
 		return (NULL);
 
@@ -36,9 +38,11 @@ char *get_location(char *command)
 			free_list(head);
 			return (temp);
 		}
+
 		dirs = dirs->next;
 		free(temp);
 	}
+
 	free_list(head);
 
 	return (NULL);
@@ -87,13 +91,16 @@ char *fill_path_dir(char *path)
 			{
 				_strcat(path_copy, ":");
 				_strcat(path_copy, pwd);
-			} else
+			}
+			else
 				_strcat(path_copy, ":");
-		} else
+		}
+		else
 		{
 			_strncat(path_copy, &path[i], 1);
 		}
-	} return (path_copy);
+	}
+	return (path_copy);
 }
 
 /**
