@@ -2,6 +2,8 @@
 /**
  * execute_command - execute commands if command is detected
  * @args: command to be executed
+ * Return: 0 on success
+ * -1 on failure
  */
 int execute_command(char **args)
 {
