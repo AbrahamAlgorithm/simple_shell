@@ -1,4 +1,6 @@
 #include "shells.h"
+int hist;
+char *name;
 
 /**
  * get_builtin - Matches a command with a corresponding

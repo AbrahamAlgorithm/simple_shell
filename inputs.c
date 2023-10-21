@@ -1,4 +1,6 @@
 #include "shells.h"
+int hist;
+char *name;
 
 /**
  * get_args - Gets a command from standard input.

@@ -1,4 +1,6 @@
 #include "shells.h"
+int hist;
+char *name;
 
 /**
  * error_env - Creates an error message for shellby_env errors.

@@ -1,4 +1,6 @@
 #include "shells.h"
+int hist;
+char *name;
 
 /**
  * error_126 - Creates an error message for permission denied failures.
