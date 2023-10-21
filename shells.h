@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <stdio.h>
+#include <string.h>
 
 #define END_OF_FILE -2
 #define EXIT -3
@@ -70,6 +71,8 @@ char *_itoa(int num);
 
 /* Input Helpers */
 void handle_line(char **line, ssize_t read);
+ssize_t get_new_len(char *line);
+void logical_ops(char *line, ssize_t *new_len);
 void variable_replacement(char **args, int *exe_ret);
 char *get_args(char *line, int *exe_ret);
 int call_args(char **args, char **front, int *exe_ret);
@@ -97,6 +100,9 @@ int shellby_setenv(char **args, char __attribute__((__unused__)) **front);
 int shellby_unsetenv(char **args, char __attribute__((__unused__)) **front);
 int shellby_cd(char **args, char __attribute__((__unused__)) **front);
 int shellby_alias(char **args, char __attribute__((__unused__)) **front);
+void set_alias(char *var_name, char *value);
+void print_alias(alias_t *alias);
+char **replace_aliases(char **args);
 int shellby_help(char **args, char __attribute__((__unused__)) **front);
 
 /* Builtin Helpers */
